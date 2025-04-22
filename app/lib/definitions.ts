@@ -1,4 +1,9 @@
-
+export interface Invoice {
+  id:string;
+  customer_id:string;
+  name:string;
+  amount:string;
+}
 export type User = {
   id: string;
   name: string;

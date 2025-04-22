@@ -14,8 +14,8 @@ const sql = postgres(process.env.POSTGRES_URL!, {
 
 export async function GET() {
   try {
-    const invoices = await sql<definitions.Invoice[]>`
-      SELECT invoices.amount, customers.name
+    const invoices = await sql<InvoiceWithCustomer[]>`
+      SELECT invoices.*, customers.name
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       WHERE invoices.amount = 666
