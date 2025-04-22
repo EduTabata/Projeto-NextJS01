@@ -1,26 +1,44 @@
-// import postgres from 'postgres';
+import postgres from 'postgres';
+import { NextResponse } from 'next/server';
+import * as definitions from '../lib/definitions';
+import { Invoice } from '../lib/definitions';
 
-// const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+interface definitions.Invoice {
+  amount: "number";
+  name: "string";
+}
 
-// async function listInvoices() {
-// 	const data = await sql`
-//     SELECT invoices.amount, customers.name
-//     FROM invoices
-//     JOIN customers ON invoices.customer_id = customers.id
-//     WHERE invoices.amount = 666;
-//   `;
-
-// 	return data;
-// }
+const sql = postgres(process.env.POSTGRES_URL!, {
+  ssl: process.env.NODE_ENV === 'production' ? 'require' : 'allow',
+  idle_timeout: 20,
+  max: 10
+});
 
 export async function GET() {
-  return Response.json({
-    message:
-      'Uncomment this file and remove this line. You can delete this file when you are finished.',
-  });
-  // try {
-  // 	return Response.json(await listInvoices());
-  // } catch (error) {
-  // 	return Response.json({ error }, { status: 500 });
-  // }
+  try {
+    const invoices = await sql<definitions.Invoice[]>`
+      SELECT invoices.amount, customers.name
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      WHERE invoices.amount = 666
+    `;
+
+    if (!invoices || invoices.length === 0) {
+      return NextResponse.json(
+        { error: "No invoices found with amount 666" },
+        { status: 404 }
+      );
+    }
+      return NextResponse.json(invoices);
+    
+  } catch (error) {
+    console.error('Database Error:', error);
+    return NextResponse.json(
+      { 
+        error: "Failed to fetch invoices",
+        details: process.env.NODE_ENV === 'development' ? error.message : null
+      }, 
+      { status: 500 }
+    );
+  }
 }
