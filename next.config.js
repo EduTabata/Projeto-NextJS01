@@ -1,12 +1,10 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
+const nextConfig = {
   reactStrictMode: true,
 
   async redirects() {
     return [
       {
-        source: '/',
+        source: '/app/Home.tsx',
         destination: '/',
         permanent: false,
       },
