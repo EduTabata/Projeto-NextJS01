@@ -1,12 +1,10 @@
 import postgres from 'postgres';
 import { NextResponse } from 'next/server';
 import * as definitions from '../lib/definitions';
-import { Invoice } from '../lib/definitions';
 
-interface definitions.Invoice {
-  amount: "number";
-  name: "string";
-}
+type InvoiceWithName = definitions.Invoice & {
+  name: string;
+};
 
 const sql = postgres(process.env.POSTGRES_URL!, {
   ssl: process.env.NODE_ENV === 'production' ? 'require' : 'allow',
@@ -31,7 +29,7 @@ export async function GET() {
     }
       return NextResponse.json(invoices);
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Database Error:', error);
     return NextResponse.json(
       { 
