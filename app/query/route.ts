@@ -1,6 +1,7 @@
 import postgres from 'postgres';
 import { NextResponse } from 'next/server';
 import * as definitions from '../lib/definitions';
+import { InvoiceWithCustomer } from '../lib/definitions';
 
 type InvoiceWithName = definitions.Invoice & {
   name: string;

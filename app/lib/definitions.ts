@@ -3,6 +3,8 @@ export interface Invoice {
   customer_id:string;
   name:string;
   amount:string;
+  date:string;
+  status: 'pending' | 'paid'
 }
 export type User = {
   id: string;
@@ -16,14 +18,6 @@ export type Customer = {
   name: string;
   email: string;
   image_url: string;
-};
-
-export type Invoice = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  date: string;
-  status: 'pending' | 'paid';
 };
 
 export type Revenue = {
@@ -86,3 +80,7 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export interface InvoiceWithCustomer extends Invoice{
+  name: string;
+}
