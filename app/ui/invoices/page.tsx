@@ -2,7 +2,7 @@
 import { useState } from "react"
 
 export default function InvoicePage() {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
