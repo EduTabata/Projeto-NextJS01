@@ -1,15 +1,10 @@
+
 {
     "version": 2,
     "builds": [
       {
-        "src": "/app/(pages)/home",
-        "use": "@vercel/static-build"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/out/$1"
+        "src": "app/api/**/*.ts",
+        "use": "@vercel/node"
       }
     ]
   }
