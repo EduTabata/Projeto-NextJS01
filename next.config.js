@@ -1,16 +1,12 @@
-const nextConfig = {
-  experimental:{
-    serverActions:true, 
-  },
-  reactStrictMode: true,
+ /**@type {import('next').NextConfig} */
 
-  async redirects() {
-    return [];
+const nextConfig = {
+  experimental: {
+    serverActions: true,
   },
-  env:{
-    POSTGRES_URL: process.env.POSTGRES_URL
+  env: {
+    POSTGRES_URL: process.env.POSTGRES_URL,
   }
 };
 
 export default nextConfig;
-module.exports = nextConfig
