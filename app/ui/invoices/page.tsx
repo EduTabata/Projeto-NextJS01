@@ -1,59 +1,65 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+type Invoice = {
+  id: number
+  amount: number
+  name: string
+}
 
 export default function InvoicePage() {
-  const [data, setData] = useState(true) 
+  const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
-  async function fetchData() {
-    setLoading(true) 
+  const fetchData = async () => {
+    setLoading(true)
     setError(null)
     
     try {
-      const res = await fetch("/api/invoices")
-      if (!res.ok) throw new Error(`Error: ${res.status}`)
-      const json = await res.json()
-      console.log("Dados recebidos:", json) 
-      setData(json)
-    } catch (error) {
-      console.error("Fetch error:", error)
-      setError(error.message ?? "Failed to fetch data")
+      const response = await fetch('/api/invoices')
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+      
+      const data = await response.json()
+      console.log("Dados recebidos:", data) // Debug crucial
+      
+      if (!data || data.length === 0) {
+        throw new Error("Nenhuma fatura encontrada")
+      }
+      
+      setInvoices(data)
+    } catch (err) {
+      console.error("Erro completo:", err)
+      setError(err instanceof Error ? err.message : "Erro desconhecido")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="container">
-      <button 
-        onClick={fetchData} 
+    <div className="p-4">
+      <button
+        onClick={fetchData}
         disabled={loading}
-        className="fetch-button"
+        className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
       >
-        {loading ? "Loading..." : "Get Invoice Data"}
+        {loading ? "Carregando..." : "Buscar Faturas"}
       </button>
 
-      {error && <p className="error">Error: {error}</p>}
-
-      {data && (
-        <div className="invoice-data">
-
-          {Array.isArray(data) ? (
-            data.map(invoice => (
-              <div key={invoice.id ?? invoice.amount}>
-                <p>Amount: {invoice.amount}</p>
-                <p>Name: {invoice.name}</p>
-              </div>
-            ))
-          ) : (
-            <>
-              <p>Amount: {data.amount}</p>
-              <p>Name: {data.name}</p>
-            </>
-          )}
+      {error && (
+        <div className="text-red-500 mt-2 p-2 border border-red-300 rounded">
+          Erro: {error}
         </div>
       )}
+
+      <div className="mt-4 space-y-2">
+        {invoices.map((invoice) => (
+          <div key={invoice.id} className="p-3 border rounded">
+            <p><strong>Valor:</strong> {invoice.amount}</p>
+            <p><strong>Cliente:</strong> {invoice.name}</p>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
