@@ -2,22 +2,23 @@
 import { useState } from "react"
 
 export default function InvoicePage() {
-  const [data, setData] = useState(true)
+  const [data, setData] = useState(true) 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   async function fetchData() {
-    setLoading(true)
+    setLoading(true) 
     setError(null)
     
     try {
       const res = await fetch("/api/invoices")
       if (!res.ok) throw new Error(`Error: ${res.status}`)
       const json = await res.json()
+      console.log("Dados recebidos:", json) 
       setData(json)
     } catch (error) {
       console.error("Fetch error:", error)
-      setError(error.message || "Failed to fetch data")
+      setError(error.message ?? "Failed to fetch data")
     } finally {
       setLoading(false)
     }
@@ -37,8 +38,20 @@ export default function InvoicePage() {
 
       {data && (
         <div className="invoice-data">
-          <p>Amount: {data.amount}</p>
-          <p>Name: {data.name}</p>
+
+          {Array.isArray(data) ? (
+            data.map(invoice => (
+              <div key={invoice.id ?? invoice.amount}>
+                <p>Amount: {invoice.amount}</p>
+                <p>Name: {invoice.name}</p>
+              </div>
+            ))
+          ) : (
+            <>
+              <p>Amount: {data.amount}</p>
+              <p>Name: {data.name}</p>
+            </>
+          )}
         </div>
       )}
     </div>
